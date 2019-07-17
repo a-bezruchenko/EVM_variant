@@ -5,7 +5,7 @@ mainWindow::mainWindow(QWidget *parent)
 {
 	ui.setupUi(this);
 
-	setWindowTitle(QString::fromLocal8Bit("Ё¬ћ, выбор варианта, верси€ 1.1"));
+	setWindowTitle(QString::fromLocal8Bit("Ё¬ћ, выбор варианта, верси€ 1.2"));
 
 	connect(ui.pushButton, SIGNAL(clicked()), this, SLOT(calculate()));
 
@@ -65,7 +65,10 @@ bool mainWindow::eventFilter (QObject * o,QEvent * e)
 void mainWindow::calculate()
 {
 	if (ui.format->text().isEmpty())
+	{
+		QMessageBox::warning(this, "error", "no format entered");
 		return;
+	}
 	
 	QString format = ui.format->text();
 	int2 num(0,0);
@@ -82,12 +85,16 @@ void mainWindow::calculate()
 	}
 	int f = 0, s = 0;
 	int index = 0;
+
 	for (; index < format.size() && format.at(index) != ' '; index++)
 		f += PARAMS[format.at(index).digitValue()].size==2?1:2;
 
 	index++;
 	for (; index < format.size() ; index++)
 		s += PARAMS[format.at(index).digitValue()].size==2?1:2;
+	
+
+	
 
 	ui.binary_output->setText(intToBin(num.first, f) +QString(" ")+ intToBin(num.second, s));
 }

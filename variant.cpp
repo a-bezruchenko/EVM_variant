@@ -23,30 +23,35 @@ int2 Variant::toInt2(QString format)
 	int shift = 0;
 
 	int i = fstr.size()-1;
-	// второе число
-	for (; i>=0; i--)
-	{
-		*buf = fstr[i];
-		if (*buf == ' ')
-			break;
 
-		if (atoi(buf)<7)
+	if (format.contains(' '))
+	{
+		// второе число
+		for (; i>=0; i--)
 		{
-			for (int j = 0; j < PARAMS[atoi(buf)].size; j++)
+			*buf = fstr[i];
+			if (*buf == ' ')
+				break;
+
+			if (atoi(buf)<7)
 			{
-				if (((atoi(buf) == 0) && (adr_calc == PARAMS[atoi(buf)].options[j]))||
-				((atoi(buf) == 1) && (adr_var == PARAMS[atoi(buf)].options[j]))||
-				((atoi(buf) == 2) && (com_adr == PARAMS[atoi(buf)].options[j]))||
-				((atoi(buf) == 3) && (alu_ops == PARAMS[atoi(buf)].options[j]))||
-				((atoi(buf) == 4) && (sh_type == PARAMS[atoi(buf)].options[j]))||
-				((atoi(buf) == 5) && (commands == PARAMS[atoi(buf)].options[j]))||
-				((atoi(buf) == 6) && (logic == PARAMS[atoi(buf)].options[j])))
-					res.second |= (j<<shift);
+				for (int j = 0; j < PARAMS[atoi(buf)].size; j++)
+				{
+					if (((atoi(buf) == 0) && (adr_calc == PARAMS[atoi(buf)].options[j]))||
+					((atoi(buf) == 1) && (adr_var == PARAMS[atoi(buf)].options[j]))||
+					((atoi(buf) == 2) && (com_adr == PARAMS[atoi(buf)].options[j]))||
+					((atoi(buf) == 3) && (alu_ops == PARAMS[atoi(buf)].options[j]))||
+					((atoi(buf) == 4) && (sh_type == PARAMS[atoi(buf)].options[j]))||
+					((atoi(buf) == 5) && (commands == PARAMS[atoi(buf)].options[j]))||
+					((atoi(buf) == 6) && (logic == PARAMS[atoi(buf)].options[j])))
+						res.second |= (j<<shift);
+				}
 			}
+			shift += PARAMS[atoi(buf)].size==2?1:2;
 		}
-		shift += PARAMS[atoi(buf)].size==2?1:2;
+		shift = 0;
 	}
-	shift = 0;
+	
 	// первое число
 	for (; i>=0; i--)
 	{
@@ -85,40 +90,44 @@ Variant Variant::fromInt2(int2 num, QString format)
 	int shift = 0;
 	int i = fstr.size()-1;
 
-	// второе число
-	for (; i >=0 ; i--)
+	if (format.contains(' '))
 	{
-		*buf = fstr[i];
-		if (*buf==' ')
-			break;
+		// второе число
+		for (; i >=0 ; i--)
+		{
+			*buf = fstr[i];
+			if (*buf==' ')
+				break;
 
 		
-		if (atoi(buf)<7)
-		{
-			int mask = PARAMS[atoi(buf)].size==2?1:3;
-			for (int j = 0; j < PARAMS[atoi(buf)].size; j++)
-				if ((num.second&(mask<<shift)) == (j<<shift))
-				{
-					if (atoi(buf) == 0)
-						res.adr_calc = ADR_CALC[j];
-					else if (atoi(buf) == 1)
-						res.adr_var = ADR_VAR[j];
-					else if (atoi(buf) == 2)
-						res.com_adr = COM_ADR[j];
-					else if (atoi(buf) == 3)
-						res.alu_ops = ALU_OPS[j];
-					else if (atoi(buf) == 4)
-						res.sh_type = SH_TYPE[j];
-					else if (atoi(buf) == 5)
-						res.commands = COMMANDS[j];
-					else if (atoi(buf) == 6)
-						res.logic = LOGIC[j];
-				}
-			shift += PARAMS[atoi(buf)].size==2?1:2;
-		}
+			if (atoi(buf)<7)
+			{
+				int mask = PARAMS[atoi(buf)].size==2?1:3;
+				for (int j = 0; j < PARAMS[atoi(buf)].size; j++)
+					if ((num.second&(mask<<shift)) == (j<<shift))
+					{
+						if (atoi(buf) == 0)
+							res.adr_calc = ADR_CALC[j];
+						else if (atoi(buf) == 1)
+							res.adr_var = ADR_VAR[j];
+						else if (atoi(buf) == 2)
+							res.com_adr = COM_ADR[j];
+						else if (atoi(buf) == 3)
+							res.alu_ops = ALU_OPS[j];
+						else if (atoi(buf) == 4)
+							res.sh_type = SH_TYPE[j];
+						else if (atoi(buf) == 5)
+							res.commands = COMMANDS[j];
+						else if (atoi(buf) == 6)
+							res.logic = LOGIC[j];
+					}
+				shift += PARAMS[atoi(buf)].size==2?1:2;
+			}
 		
+		}
+		shift = 0;
 	}
-	shift = 0;
+	
 	// первое число
 	for (; i>=0; i--)
 	{

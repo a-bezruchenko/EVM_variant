@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "config.h"
+#include <qmessagebox.h>
 
 struct int2
 {
